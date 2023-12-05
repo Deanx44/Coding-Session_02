@@ -1,16 +1,10 @@
-* {
-    box-sizing: border-box;
-}
-
 .sidebar {
-    position: absolute;
-    width: 118px;
-    height: 42%;
-    background-color: #292929;
-    color: #ffffff;
-    padding: 11px;
-    border-radius: 1px 10px 10px 0px;
-    margin-top: 0px;
+    position: fixed;
+    width: 250px;
+    height: 100%;
+    background-color: #D8F3DC; 
+    color: #74C69D; 
+    padding: 20px;
 }
 
 .sidebar h1 {
@@ -21,7 +15,6 @@
 .sidebar ul {
     list-style: none;
     padding: 0;
-    margin-top: 27.6px;
 }
 
 .sidebar li {
@@ -30,44 +23,36 @@
 
 .sidebar a {
     text-decoration: none;
-    color: #d2d6d4;
+    color: #74C69D; 
     font-size: 18px;
 }
 
 .content {
-    margin-left: 25px;
-    /* Adjust to match the sidebar width */
+    margin-left: 270px;
     padding: 50px;
-    margin-bottom: 30px;
-    padding-top: 20px;
 }
 
-
-/* Highlight the selected menu item */
 
 .sidebar a:hover {
-    color: rgb(183, 204, 228);
-    /* Hover color using the provided hex code */
+    color: #B7E4C7; 
 }
 
-
-/* Body */
 
 body {
     font-family: Arial, sans-serif;
-    background-color: rgb(96, 162, 210);
-    /* Background color using the provided hex code */
+    background-color: #7ca6d5; 
     color: #333;
-    /* Text color */
     margin: 0;
     padding: 0;
 }
 
 
-/* Existing CSS remains the same */
+h1 {
+    color: #74C69D; 
+}
 
 
-/* Style for the dropdown menu */
+
 
 .dropdown {
     position: relative;
@@ -76,71 +61,53 @@ body {
 
 .dropdown .dropbtn {
     text-decoration: none;
-    color: #d2d6d4;
+    color: #74C69D; 
     font-size: 18px;
 }
 
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #f6f6f6;
-    min-width: 115px;
+    background-color: #D8F3DC; 
+    min-width: 160px;
     z-index: 1;
-    border-radius: 5px;
 }
 
 .dropdown-content a {
-    color: #00000f;
-    /* Text color using the provided hex code */
+    color: #74C69D; 
     text-decoration: none;
     display: block;
     padding: 10px;
-}
-
-.dropdown-content a:hover {
-    color: #555252e6;
 }
 
 .dropdown:hover .dropdown-content {
     display: block;
 }
 
-
 /* Tables */
-
 table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
-    background-color: rgb(254, 254, 255);
-    /* Table background color using the provided hex code */
-    border: 1px solid rgb(24, 24, 23);
-    /* Table border color using the provided hex code */
+    background-color: #D8F3DC; 
+    border: 1px solid #95D5B2; 
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    font-size: 14px
 }
 
-th,
-td {
+th, td {
     padding: 12px;
     text-align: left;
-    border-bottom: 1px solid #0b0b0b;
-    /* Table border color using the provided hex code */
+    border-bottom: 1px solid #95D5B2; 
 }
 
 th {
-    background-color: #73c6ef;
-    /* Header color using the provided hex code */
+    background-color: #B7E4C7; 
 }
 
-
 /* Forms */
-
 form {
     background-color: #D8F3DC;
-    /* Form background color using the provided hex code */
-    border: 1px solid #95D5B2;
-    /* Form border color using the provided hex code */
+    border: 1px solid #95D5B2; 
     padding: 40px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 500px;
@@ -151,36 +118,32 @@ form {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    height: 100vh; 
 }
 
 .centered-form label {
-    text-align: left;
-    /* Keep labels left-aligned */
+    text-align: left; 
 }
 
 label {
     display: block;
     margin-bottom: 10px;
-    color: rgb(103, 114, 217);
-    /* Text color using the provided hex code */
+    color: #74C69D;
 }
 
-form>input[type="text"],
-form>input[type="date"],
-form>select {
+input[type="text"],
+input[type="date"],
+select {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
-    border: 1px solid #74C69D;
-    /* Form border color using the provided hex code */
+    border: 1px solid #74C69D; 
     border-radius: 5px;
 }
 
 input[type="submit"] {
-    background-color: #74C69D;
-    /* Submit button color using the provided hex code */
-    color: #D8F3DC;
-    /* Text color using the provided hex code */
+    background-color: #74C69D; 
+    color: #D8F3DC; 
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -188,12 +151,9 @@ input[type="submit"] {
 }
 
 input[type="submit"]:hover {
-    background-color: rgb(93, 127, 230);
-    /* Slightly darker hover color using the provided hex code */
+    background-color: #3DAC78; 
 }
 
-
-/* Header */
 
 header {
     background-color: #D8F3DC;
@@ -222,10 +182,8 @@ header {
 .button-link {
     display: inline-block;
     padding: 10px 20px;
-    background-color: #1569e7;
-    /* Button background color */
-    color: #fff;
-    /* Button text color */
+    background-color: #74C69D; 
+    color: #fff; 
     text-decoration: none;
     border: none;
     border-radius: 5px;
@@ -234,31 +192,21 @@ header {
 }
 
 .button-link:hover {
-    background-color: rgb(90, 110, 169)
-    /* Button background color on hover */
+    background-color: #3DAC78; 
 }
 
 
-/* Footer */
-
 footer {
-    background-color: #272523;
-    color: #fff2f2;
-    padding: 0px 0px;
+    background-color: #D8F3DC;
+    color: #fff;
+    padding: 20px 0;
     text-align: center;
-    height: 50px;
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
 }
 
 .footer-content {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
-    gap: 550px;
-    padding-top: 0px;
 }
 
 .footer-links {
@@ -277,115 +225,6 @@ footer {
 }
 
 
-/* Change font color for links on hover */
-
 .footer-links a:hover {
     color: #74C69D;
-}
-
-.w3-teal {
-    display: flex;
-}
-
-.flex {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-}
-
-.flex-between {
-    display: flex;
-    justify-content: space-between;
-}
-
-.indent {
-    margin-left: 15px
-}
-
-.thin {
-    margin: 5px 0;
-}
-
-.card-body {
-    background-color: white;
-    padding: 15px 40px;
-    border-radius: 8px;
-    box-shadow: 1px 2px 4px 0px;
-}
-
-.card-body-2 {
-    margin-top: 80px;
-    background-color: white;
-    padding: 20px 40px;
-    border-radius: 8px;
-    box-shadow: 2px 2px 5px 0px;
-}
-
-.pagination {
-    text-align: center;
-    margin-top: 15px;
-}
-
-.page-link {
-    width: 30px;
-    height: 33px;
-    border-radius: 10px;
-    background-color: #74c69b;
-    color: #FFFFFF;
-    border: none;
-    cursor: pointer;
-    position: relative;
-    outline: none;
-    display: inline-block;
-    padding-top: 5px;
-    text-decoration: none;
-    text-align: center;
-    transition: background-color 0.3s;
-    margin: 0px 3px;
-}
-
-.page-link:hover {
-    opacity: 1;
-    visibility: visible;
-    background-color: #3DAC78;
-}
-
-td>.button-link {
-    padding: 7px 8px;
-}
-
-.search {
-    width: 150px;
-    padding: 10px 0px 10px 35px;
-    border-radius: 20px;
-    border: solid 1px #333;
-    transition: all .2s ease-in-out;
-    outline: none;
-    opacity: 0.8;
-    height: 37px;
-}
-
-.container-search {
-    position: relative;
-    text-align: left;
-}
-
-.container-search svg {
-    position: absolute;
-    top: 50%;
-    transform: translate(0, -50%);
-    left: 10px;
-}
-
-.search:focus {
-    opacity: 1;
-    width: 250px;
-}
-
-.searchForm {
-    background-color: unset;
-    border: None;
-    padding: 0;
-    box-shadow: 0 0 0;
-    width: 100%;
 }
