@@ -1,14 +1,11 @@
 <?php
 include_once("db.php");
-include_once("student.php");
+include_once("students.php");
 
 $db = new Database();
 $connection = $db->getConnection();
 $student = new Student($db);
 
-$data = $student->getGenderData();
-$data2 = $student->getPopulationData();
-$data3 = $student->getBirthYearData();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,161 +14,149 @@ $data3 = $student->getBirthYearData();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Records</title>
     <link rel="stylesheet" type="text/css" href="css/styles.css">
+
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js">
+    
+</script>
+<style>
+    .button-link {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: green;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .button-link:hover {
+            background-color: black;
+        }
+    </style>
+
 </head>
 <body>
-    
+    <!--header -->
+    <?php include('templates/header.html'); ?>
     <?php include('includes/navbar.php'); ?>
-<div class="content">
-    <div class="flex">
-        <div class="card-body">
-            <h2>Gender Percentage Report</h2>
-            <hr>
-            <canvas id="genderPie" width="250" height="250"></canvas>
-        </div>
-        <div class="card-body">
-            <h2>Population Report</h2>
-            <hr>
-            <canvas id="populationChart" width="350" height="350"></canvas>
-        </div>
+
+    <div class="content">
+        <h1>WELCOME</h1>
+        <p>In here you can find the records of the student enrolled in PSU.</p>
     </div>
-    <div class="card-body-2">
-        <h2>Students Birth Year Report</h2>
-        <hr>
-        <canvas id="yearLine" height="100"></canvas>
+   
+    <div class="content">
+        <canvas id="studentChart" width="600" height="600"></canvas>
     </div>
-</div>
-</body>
-<?php include('templates/footer.html'); ?>
-</html>
+    <script>
+    // connection to student.php
+    var maleCount = <?php echo $student->GenderCount(1); ?>;
+    var femaleCount = <?php echo $student->GenderCount(0); ?>;
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    function getRandomColor() {
-        var letters = '0123456789ABCDEF';
-        var color = '#';
-        for (var i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    }
-
-    var labels = [];
-    var counts = [];
-
-    <?php foreach ($data as $item): ?>
-    labels.push('<?php echo $item["gender"] === "0" ? "Male" : "Female"; ?>');
-    counts.push(<?php echo $item["count"]; ?>);
-    <?php endforeach; ?>
-
-    const gender = document.getElementById('genderPie').getContext('2d');
-    const pieChart = new Chart(gender, {
-        type: 'pie',
-        data: {
-            labels: labels,
-            datasets: [{
-                data: counts,
-                backgroundColor: ['#3498db', '#e74c3c']
-            }]
-        },
-        options: {
-            title: {
-                display: true,
-                text: 'Gender Percentage'
-            }
-        }
-    });
-</script>
-
-<script>
-    var labels = [];
-    var datasets = {};
-
-    <?php foreach ($data2 as $item): ?>
-    var province = '<?php echo $item["province_name"]; ?>';
-    var townCity = '<?php echo $item["town_name"]; ?>';
-    var count = <?php echo $item["count"]; ?>;
-
-    labels.push(townCity);
-
-    if (!datasets[province]) {
-        datasets[province] = [];
-    }
-    datasets[province].push(count);
-    <?php endforeach; ?>
-
-    const population = document.getElementById('populationChart').getContext('2d');
-    const barChart = new Chart(population, {
+    // Chart.js code for bar chart
+    var ctx = document.getElementById('studentChart').getContext('2d');
+    var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: labels,
-            datasets: Object.keys(datasets).map(province => ({
-                label: province,
-                data: datasets[province],
-                backgroundColor: getRandomColor(),
-            }))
-        },
-        options: {
-            title: {
-                display: true,
-                text: 'Population Percentage by Town/City'
-            },
-            scales: {
-                x: { stacked: false },
-                y: { stacked: false }
-            }
-        }
-    });
-</script>
-
-<script>
-    var labels = [];
-    var counts = [];
-
-    <?php foreach ($data3 as $item): ?>
-    labels.push(<?php echo $item["birth_year"]; ?>);
-    counts.push(<?php echo $item["count"]; ?>);
-    <?php endforeach; ?>
-
-    const totalStudents = counts.reduce((total, count) => total + count, 0);
-    const percentages = counts.map(count => (count / totalStudents) * 100);
-
-    const birthChart = document.getElementById('yearLine').getContext('2d');
-    const lineChart = new Chart(birthChart, {
-        type: 'line',
-        data: {
-            labels: labels,
+            labels: ['Male', 'Female'],
             datasets: [{
-                label: 'Birth Year Percentage',
-                data: percentages,
-                borderColor: 'blue',
-                fill: true
+                label: 'Number of Students by Gender',
+                data: [maleCount, femaleCount],
+                backgroundColor: [                 
+                    'rgba(54, 162, 235, 0.8)',
+                    'rgba(255, 99, 132, 0.8)',
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 99, 132, 1)',
+                ],
+                borderWidth: 1
             }]
         },
-        options: {
-            title: {
-                display: true,
-                text: 'Birth Year Percentage Chart'
-            },
-            scales: {
-                x: {
-                    type: 'linear',
-                    position: 'bottom',
-                    title: {
-                        display: true,
-                        text: 'Birth Year'
+                options: {
+                    responsive: false, //to make the graph organize
+                }
+    });
+</script>
+<div class="content">
+        <h1>Number of Male and Female Students</h1>
+        <p>In the chart above you will see how many female and male enrolled in the school.</p>
+        <a class="button-link" href="/views/report1.php">View</a>
+    </div>
+<div class="content">
+        <canvas id="birthdayChart" width="600" height="600"></canvas>
+
+        <script>
+            // connection to student.php
+            var monthData = <?php echo json_encode($student->BirthMonth()); ?>;
+            var months = Object.keys(monthData);
+            var counts = Object.values(monthData);
+
+            // Chart.js code for bar chart
+            var ctx = document.getElementById('birthdayChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Number of Students by Birth Month',
+                        data: counts,
+                        backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
                     }
                 },
-                y: {
-                    min: 0,
-                    max: 100,
-                    title: {
-                        display: true,
-                        text: 'Percentage'
-                    }
+                options: {
+                    responsive: false, 
                 }
-            }
-        }
-    });
-    console.log(labels);
-    console.log(datasets);
-</script>
+            });
+        </script>
+    </div>
+    <div class="content">
+        <h1>Number of Male and Female Students who share same birth month's</h1>
+        <p>In the graph above you will know how many students have the same birth month in the whole school.</p>
+        <a class="button-link" href="/views/report2.php">View</a>
+    </div>
+    <div class="content">
+        <canvas id="birthYearChart" width="600" height="600 "></canvas>
+
+        <script>
+            var birthYearData = <?php echo json_encode($student->Millennials()); ?>;
+            var labels = birthYearData.map(item => item.birth_year_group);
+            var dataCounts = birthYearData.map(item => item.count);
+             // Chart.js code for pie chart
+            var ctx = document.getElementById('birthYearChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: dataCounts,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.8)',
+                            'rgba(54, 162, 235, 0.8)',
+                        ],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: false,
+                }
+            });
+        </script>
+    </div>
+    <div class="content">
+        <h1>Millennials student</h1>
+        <p>In pie graph above we diveded the student who are born from 2000 onward and those who born before 2000. We classified the students who is born in 2000 as Millennials while those who born before as Pre-Millennials.</p>
+        <a class="button-link" href="/views/report3.php">View</a>
+    </div>
+    <?php include('templates/footer.html'); ?>
+</body>
+</html>
