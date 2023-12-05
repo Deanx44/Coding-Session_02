@@ -1,19 +1,17 @@
 <?php
-include("../db.php"); 
-include("../student.php"); 
-include("../student_details.php"); 
-include("../town_city.php");
-include("../province.php");
+include_once("../db.php"); 
+include_once("../student.php"); 
+include_once("../student_details.php"); 
+include_once("../town_city.php");
+include_once("../province.php");
 
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
-
-    
     $db = new Database();
     $student = new Student($db);
     $studentData = $student->read($id); 
-
-    if (!$studentData) {
+    if ($studentData) {
+    } else {
         echo "Student not found.";
     }
 } else {
@@ -29,20 +27,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         'last_name' => $_POST['last_name'],
         'gender' => $_POST['gender'],
         'birthday' => $_POST['birthday'],
-        'contact_num' => $_POST['contact_num'],
+        'contact_number' => $_POST['contact_number'],
         'street' => $_POST['street'],
         'town_city' => $_POST['town_city'],
         'province' => $_POST['province'],
-        'zip' => $_POST['zip']
+        'zip_code' => $_POST['zip_code'],
     ];
 
     $db = new Database();
     $student = new Student($db);
-
-    
+    // Call the edit method to update the student data
     if ($student->update($id, $data)) {
         echo "Record updated successfully.";
-        header('Location: students.view.php');
     } else {
         echo "Failed to update the record.";
     }
@@ -57,70 +53,71 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Edit Student</title>
 </head>
 <body>
-    
+
+    <?php include('../templates/header.html'); ?>
     <?php include('../includes/navbar.php'); ?>
 
     <div class="content">
     <h2>Edit Student Information</h2>
-    <form action="#" method="post" name="form_edit">
+    <form action="" method="post">
         <input type="hidden" name="id" value="<?php echo $studentData['id']; ?>">
-
+        
         <label for="student_number">Student Number:</label>
         <input type="text" name="student_number" id="student_number" value="<?php echo $studentData['student_number']; ?>">
-
+        
         <label for="first_name">First Name:</label>
         <input type="text" name="first_name" id="first_name" value="<?php echo $studentData['first_name']; ?>">
-
+        
         <label for="middle_name">Middle Name:</label>
         <input type="text" name= "middle_name" id="middle_name" value="<?php echo $studentData['middle_name']; ?>">
         
         <label for="last_name">Last Name:</label>
         <input type="text" name="last_name" id="last_name" value="<?php echo $studentData['last_name']; ?>">
-
+        
         <label for="gender">Gender:</label>
-        <select name="gender" id="gender" required>
-            <option value="0">Male</option>
-            <option value="1">Female</option>
-        </select>
+        <input type="text" name="gender" id="gender" value="<?php echo $studentData['gender']; ?>">
         
         <label for="birthday">Birthdate:</label>
         <input type="date" name="birthday" id="birthday" value="<?php echo $studentData['birthday']; ?>">
 
-        <label for="cno">Contact No.:</label>
-        <input type="text" name="contact_num" id="cno" value="<?php echo $studentData['contact_number']; ?>">
-
+        <label for="contact_number">Contact Number:</label>
+        <input type="text" name="contact_number" id="contact_number" value="<?php echo $studentData['contact_number']; ?>">
+        
         <label for="street">Street:</label>
         <input type="text" name="street" id="street" value="<?php echo $studentData['street']; ?>">
-
-        <label for="town">Town:</label>
-        <select name="town_city" id="town" required>
+        
+        
+        <label for="town_city">Town / City:</label>
+        <select name="town_city" id="town_city" required>
         <?php
-            $db = new Database();
-            $towns = new TownCity($db);
-            $results = $towns->displayAll();
-            
+
+            $database = new Database();
+            $towns = new TownCity($database);
+            $results = $towns->getAll();
             foreach($results as $result)
             {
                 echo '<option value="' . $result['id'] . '">' . $result['name'] . '</option>';
             }
-        ?>
+        ?>      
         </select>
+
 
         <label for="province">Province:</label>
         <select name="province" id="province" required>
         <?php
-            $provinces = new Province($db);
-            $results = $provinces->displayAll();
-            
+
+            $database = new Database();
+            $provinces = new Province($database);
+            $results = $provinces->getAll();
             foreach($results as $result)
             {
                 echo '<option value="' . $result['id'] . '">' . $result['name'] . '</option>';
             }
-        ?>
-        </select>
-
-        <label for="zip">Zip Code:</label>
-        <input type="text" name="zip" id="zip" value="<?php echo $studentData['zip_code']; ?>">
+        ?>  
+        </select> 
+          
+        <label for="zip_code">Zip Code:</label>
+        <input type="text" name="zip_code" id="zip_code" value="<?php echo $studentData['zip_code']; ?>">
         
         <input type="submit" value="Update">
     </form>
