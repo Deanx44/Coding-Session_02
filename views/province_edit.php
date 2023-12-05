@@ -1,42 +1,36 @@
 <?php
-include_once("../db.php"); // Include the Database class file
-include_once("../province.php"); // Include the Student class file
+include_once("../db.php"); 
+include_once("../province.php"); 
 
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
-    // Fetch province data by ID from the database
+    
     $db = new Database();
     $province = new Province($db);
-    $province_data = $province->read($id); // Implement the read method in the Province class
+    $province_Data = $province->read($id); 
 
-    if (!$province) {
-        echo "Province not found.";
-    }
-} else {
-    echo "Province ID not provided.";
-}
+} 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $data = [
-        'id' => $_POST['id'],
+        'id' => $_POST['id'],  
         'name' => $_POST['name'],
     ];
 
     $db = new Database();
-    $province = new Province($db);
+    $provinces = new Province($db);
 
-    // Call the edit method to update the province data
-    if ($province->update($id, $data)) {
+    
+    if ($provinces->update($id, $data)) {
         echo "Record updated successfully.";
-        header('Location: province.view.php');
     } else {
         echo "Failed to update the record.";
     }
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -44,20 +38,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Edit Province</title>
 </head>
 <body>
-<!-- Include the header and navbar -->
-<?php include('../includes/navbar.php'); ?>
+    
+    <?php include('../templates/header.html'); ?>
+    <?php include('../includes/navbar.php'); ?>
 
-<div class="content">
-    <h2>Edit Province Name</h2>
-    <form action="#" method="post" name="form_edit">
-        <input type="hidden" name="id" value="<?php echo $province_data['id']; ?>"/>
-
-        <label for="name">Province Name:</label>
-        <input type="text" name="name" id="name" value="<?php echo $province_data['name']; ?>"/>
-
+    <div class="content">
+    <h2>Edit Province Information</h2>
+    <form action="" method="post">
+        <input type="hidden" name="id" value="<?php echo $province_Data['id']; ?>">
+        <label for="birthday">Name: </label>
+        <input type="text" name="name" id="name" value="<?php echo $province_Data['name']; ?>">
         <input type="submit" value="Update">
     </form>
-</div>
-<?php include('../templates/footer.html'); ?>
+    </div>
+    <?php include('../templates/footer.html'); ?>
 </body>
 </html>
+
