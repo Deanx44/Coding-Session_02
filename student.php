@@ -8,12 +8,71 @@ class Student {
         $this->db = $db;
     }
 
+    public function GenderCount($gender) {
+        try {
+            $sql = "SELECT COUNT(*) as count FROM students WHERE gender = :gender";
+            $stmt = $this->db->getConnection()->prepare($sql);
+            $stmt->bindValue(':gender', $gender);
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $result['count'];
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            throw $e; 
+        }
+    }
+    
+    public function BirthMonth() {
+        try {
+            $sql = "SELECT MONTH(birthday) as month, COUNT(*) as count FROM students GROUP BY MONTH(birthday)";
+            $stmt = $this->db->getConnection()->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $monthData = array_column($result, 'count', 'month');
+
+            for ($month = 1; $month <= 12; $month++) {
+                if (!isset($monthData[$month])) {
+                    $monthData[$month] = 0;
+                }
+            }
+
+            ksort($monthData);
+
+            return $monthData;
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            throw $e; 
+        }
+    }
+    
+    public function Millennials() {
+        try {
+            $sql = "SELECT 
+                        CASE WHEN YEAR(birthday) >= 2000 THEN '2000 and above' 
+                             ELSE 'Below 2000' 
+                        END as birth_year_group,
+                        COUNT(*) as count
+                    FROM students
+                    GROUP BY birth_year_group";
+            $stmt = $this->db->getConnection()->prepare($sql);
+            $stmt->execute();
+
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            return $result;
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            throw $e; 
+        }
+    }
+
     public function create($data) {
         try {
-            
             $sql = "INSERT INTO students(student_number, first_name, middle_name, last_name, gender, birthday) VALUES(:student_number, :first_name, :middle_name, :last_name, :gender, :birthday);";
             $stmt = $this->db->getConnection()->prepare($sql);
-
+            
             
             $stmt->bindParam(':student_number', $data['student_number']);
             $stmt->bindParam(':first_name', $data['first_name']);
@@ -21,18 +80,14 @@ class Student {
             $stmt->bindParam(':last_name', $data['last_name']);
             $stmt->bindParam(':gender', $data['gender']);
             $stmt->bindParam(':birthday', $data['birthday']);
-
-            
             $stmt->execute();
-
-            
-             
+            // Check    
             if($stmt->rowCount() > 0)
             {
                 return $this->db->getConnection()->lastInsertId();
             }
 
-        } catch (PDOException $e) {
+        } catch (PDOException $e) 
             
             echo "Error: " . $e->getMessage();
             throw $e; 
@@ -43,12 +98,13 @@ class Student {
         try {
             $connection = $this->db->getConnection();
 
-            $sql = "SELECT * FROM students JOIN student_details sd ON student_number = sd.student_id WHERE students.id = :id";
+            $sql = "SELECT students.*, student_details.contact_number, student_details.street, student_details.town_city, student_details.province, student_details.zip_code
+            FROM students
+            LEFT JOIN student_details ON students.id = student_details.student_id
+            WHERE students.id = :id";  
             $stmt = $connection->prepare($sql);
             $stmt->bindValue(':id', $id);
             $stmt->execute();
-
-            
             $studentData = $stmt->fetch(PDO::FETCH_ASSOC);
 
             return $studentData;
@@ -60,59 +116,73 @@ class Student {
 
     public function update($id, $data) {
         try {
-            $sql = "UPDATE students JOIN student_details sd ON student_number = sd.student_id SET
-                    student_number = :student_number,
-                    student_id = :student_number,
-                    first_name = :first_name,
-                    middle_name = :middle_name,
-                    last_name = :last_name,
-                    gender = :gender,
-                    birthday = :birthday,
-                    contact_number = :contact_number,
-                    street = :street,
-                    town_city = :town_city,
-                    province = :province,
-                    zip_code = :zip
-                    WHERE students.id = :id";
+            $this->db->getConnection()->beginTransaction();
+        
+        $sqlDetails = "UPDATE student_details SET
+            contact_number = :contact_number,
+            street = :street,
+            town_city = :town_city,
+            province = :province,
+            zip_code = :zip_code
+            WHERE student_id = :id";
 
-            $stmt = $this->db->getConnection()->prepare($sql);
-            
-            $stmt->bindValue(':id', $data['id']);
-            $stmt->bindValue(':student_number', $data['student_number']);
-            $stmt->bindValue(':first_name', $data['first_name']);
-            $stmt->bindValue(':middle_name', $data['middle_name']);
-            $stmt->bindValue(':last_name', $data['last_name']);
-            $stmt->bindValue(':gender', $data['gender']);
-            $stmt->bindValue(':birthday', $data['birthday']);
-            $stmt->bindValue(':contact_number', $data['contact_num']);
-            $stmt->bindValue(':town_city', $data['town_city']);
-            $stmt->bindValue(':province', $data['province']);
-            $stmt->bindValue(':street', $data['street']);
-            $stmt->bindValue(':zip', $data['zip']);
+        $stmtDetails = $this->db->getConnection()->prepare($sqlDetails);
+        $stmtDetails->bindValue(':id', $id);
+        $stmtDetails->bindValue(':contact_number', $data['contact_number']);
+        $stmtDetails->bindValue(':street', $data['street']);
+        $stmtDetails->bindValue(':town_city', $data['town_city']);
+        $stmtDetails->bindValue(':province', $data['province']);
+        $stmtDetails->bindValue(':zip_code', $data['zip_code']);
+        $stmtDetails->execute();
 
-            
-            $stmt->execute();
+        
+        $sqlStudents = "UPDATE students SET
+            student_number = :student_number,
+            first_name = :first_name,
+            middle_name = :middle_name,
+            last_name = :last_name,
+            gender = :gender,
+            birthday = :birthday
+            WHERE id = :id";
 
-            return $stmt->rowCount() > 0;
+        $stmtStudents = $this->db->getConnection()->prepare($sqlStudents);
+        $stmtStudents->bindValue(':id', $id);
+        $stmtStudents->bindValue(':student_number', $data['student_number']);
+        $stmtStudents->bindValue(':first_name', $data['first_name']);
+        $stmtStudents->bindValue(':middle_name', $data['middle_name']);
+        $stmtStudents->bindValue(':last_name', $data['last_name']);
+        $stmtStudents->bindValue(':gender', $data['gender']);
+        $stmtStudents->bindValue(':birthday', $data['birthday']);
+        $stmtStudents->execute();
+
+        $this->db->getConnection()->commit();
+
+        
+        return $stmtStudents->rowCount() > 0;
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
             throw $e; 
         }
     }
-
     public function delete($id) {
         try {
-            $sql = "DELETE FROM students WHERE id = :id";
-            $stmt = $this->db->getConnection()->prepare($sql);
-            $stmt->bindValue(':id', $id);
-            $stmt->execute();
+            $this->db->getConnection()->beginTransaction();
+        
+        $sqlDetails = "DELETE FROM student_details WHERE student_id = :id";
+        $stmtDetails = $this->db->getConnection()->prepare($sqlDetails);
+        $stmtDetails->bindValue(':id', $id);
+        $stmtDetails->execute();
 
-            
-            if ($stmt->rowCount() > 0) {
-                return true; 
-            } else {
-                return false; 
-            }
+        
+        $sqlStudents = "DELETE FROM students WHERE id = :id";
+        $stmtStudents = $this->db->getConnection()->prepare($sqlStudents);
+        $stmtStudents->bindValue(':id', $id);
+        $stmtStudents->execute();
+
+        $this->db->getConnection()->commit();
+
+        
+        return $stmtStudents->rowCount() > 0;
         } catch (PDOException $e) {
             echo "Error: " . $e->getMessage();
             throw $e; 
@@ -121,167 +191,18 @@ class Student {
 
     public function displayAll(){
         try {
-            $sql = "SELECT * FROM students LIMIT 20"; 
+            $sql = "SELECT students.*, student_details.contact_number, student_details.street, student_details.town_city, student_details.province, student_details.zip_code
+            FROM students
+            LEFT JOIN student_details ON students.id = student_details.student_id;"; 
             $stmt = $this->db->getConnection()->prepare($sql);
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             return $result;
         } catch (PDOException $e) {
-            
             echo "Error: " . $e->getMessage();
             throw $e; 
         }
     }
-
-    public function displayAllWithDetails(){
-        $conn = $this->db->getConnection();
-
-        $recordsPerPage = 10;
-        $page = isset($_GET['page']) && is_numeric($_GET['page']) ? intval($_GET['page']) : 1;
-        $search = isset($_GET['search']) ? $_GET['search'] : '';
-        $offset = ($page - 1) * $recordsPerPage;
-
-        try {
-            $sql = "SELECT * FROM students s JOIN student_details sd ON student_number = sd.student_id";
-
-            if (!empty($search)) {
-                $searchParam = "%$search%";
-                $sql .= "
-                            WHERE (CONCAT(s.last_name, ' ', s.first_name) LIKE :searchParam1 OR
-                            CONCAT(s.first_name, ' ', s.last_name) LIKE :searchParam2 OR
-                            s.student_number LIKE :searchParam3 OR
-                            sd.contact_number LIKE :searchParam4 OR
-                            sd.street LIKE :searchParam5 OR
-                            s.middle_name LIKE :searchParam6)
-                        ";
-            }
-
-            $sql .= " ORDER BY s.student_number LIMIT :limit OFFSET :offset";
-
-            $stmt = $conn->prepare($sql);
-
-            if (!empty($search)) {
-                $stmt->bindParam(':searchParam1', $searchParam, PDO::PARAM_STR);
-                $stmt->bindParam(':searchParam2', $searchParam, PDO::PARAM_STR);
-                $stmt->bindParam(':searchParam3', $searchParam, PDO::PARAM_STR);
-                $stmt->bindParam(':searchParam4', $searchParam, PDO::PARAM_STR);
-                $stmt->bindParam(':searchParam5', $searchParam, PDO::PARAM_STR);
-                $stmt->bindParam(':searchParam6', $searchParam, PDO::PARAM_STR);
-            }
-
-            $stmt->bindValue(':limit', $recordsPerPage, PDO::PARAM_INT);
-            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-
-            $stmt->execute();
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            return $result;
-        } catch (PDOException $e) {
-            
-            echo "Error: " . $e->getMessage();
-            throw $e; 
-        }
-    }
-
-    public function getStudentsCount() {
-        $conn = $this->db->getConnection();
-
-        $search = isset($_GET['search']) ? $_GET['search'] : '';
-
-        try {
-            $sql = "SELECT COUNT(*) as total FROM students s JOIN student_details sd ON student_number = sd.student_id";
-
-            if (!empty($search)) {
-                $searchParam = "%$search%";
-                $sql .= "
-                            WHERE (CONCAT(s.last_name, ' ', s.first_name) LIKE :searchParam1 OR
-                            CONCAT(s.first_name, ' ', s.last_name) LIKE :searchParam2 OR
-                            s.student_number LIKE :searchParam3 OR
-                            sd.contact_number LIKE :searchParam4 OR
-                            sd.street LIKE :searchParam5 OR
-                            s.middle_name LIKE :searchParam6)
-                        ";
-            }
-
-            $stmt = $conn->prepare($sql);
-
-            if (!empty($search)) {
-                $stmt->bindParam(':searchParam1', $searchParam, PDO::PARAM_STR);
-                $stmt->bindParam(':searchParam2', $searchParam, PDO::PARAM_STR);
-                $stmt->bindParam(':searchParam3', $searchParam, PDO::PARAM_STR);
-                $stmt->bindParam(':searchParam4', $searchParam, PDO::PARAM_STR);
-                $stmt->bindParam(':searchParam5', $searchParam, PDO::PARAM_STR);
-                $stmt->bindParam(':searchParam6', $searchParam, PDO::PARAM_STR);
-            }
-
-            $stmt->execute();
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            return $result[0]['total'];
-        } catch (PDOException $e) {
-            
-            echo "Error: " . $e->getMessage();
-            throw $e; 
-        }
-    }
-
-    public function getGenderData(){
-        try {
-            $sql = "SELECT gender, COUNT(*) as count FROM students GROUP BY gender";
-            $stmt= $this->db->getConnection()->query($sql);
-
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            echo "Connection failed: " . $e->getMessage();
-        }
-    }
-
-    public function getPopulationData() {
-        try {
-
-            $sql = "
-                    SELECT
-                        p.name as province_name,
-                        tc.name as town_name,
-                        COUNT(sd.id) as count
-                    FROM
-                        student_details sd
-                    JOIN
-                        town_city tc ON sd.town_city = tc.id
-                    JOIN
-                        province p ON sd.province = p.id
-                    GROUP BY
-                        p.name, tc.name
-                   ";
-
-            $stmt = $this->db->getConnection()->query($sql);
-            
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            echo "Connection failed: " . $e->getMessage();
-        }
-    }
-
-    public function getBirthYearData() {
-        try {
-            $sql = "
-                    SELECT
-                        YEAR(birthday) as birth_year,
-                        COUNT(id) as count
-                    FROM
-                        students
-                    GROUP BY
-                        birth_year
-                  ";
-
-            $stmt = $this->db->getConnection()->query($sql);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            echo "Connection failed: " . $e->getMessage();
-        }
-    }
- 
-    /*
-        sample simple tests
-    */
     public function testCreateStudent() {
         $data = [
             'student_number' => 'S12345',
@@ -333,5 +254,31 @@ class Student {
         }
     }
 }
+
+
+$student = new Student(new Database());
+
+$student_id = $student->testCreateStudent();
+
+
+$student->testReadStudent($student_id);
+
+
+$update_data = [
+    'id' => $student_id,
+    'student_number' => 'S67890',
+    'first_name' => 'Alice',
+    'middle_name' => 'Jane',
+    'last_name' => 'Doe',
+    'gender' => '0',
+    'birthday' => '1995-05-20',
+
+];
+$student->testUpdateStudent($student_id, $update_data);
+
+
+$student->testDeleteStudent($student_id);
+
+?>
 
 ?>
