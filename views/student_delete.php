@@ -1,7 +1,6 @@
 <?php
-include("../db.php"); 
-include("../student.php"); 
-include("../student_details.php"); 
+include_once("../db.php"); 
+include_once("../student.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['id'])) {
     $id = $_GET['id']; 
@@ -9,12 +8,10 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['id'])) {
     
     $db = new Database();
     $student = new Student($db);
-    $details = new StudentDetails($db);
 
-    // Call the delete method to delete the student record
-    if ($student->delete($id) && $details->delete($id)) {
+    
+    if ($student->delete($id)) {
         echo "Record deleted successfully.";
-        header("Location: students.view.php");
     } else {
         echo "Failed to delete the record.";
     }
