@@ -2,8 +2,8 @@
     position: fixed;
     width: 250px;
     height: 100%;
-    background-color: #D8F3DC; 
-    color: #74C69D; 
+    background-color: #D8F3DC;
+    color: #74C69D;
     padding: 20px;
 }
 
@@ -23,7 +23,7 @@
 
 .sidebar a {
     text-decoration: none;
-    color: #74C69D; 
+    color: #74C69D;
     font-size: 18px;
 }
 
@@ -32,27 +32,21 @@
     padding: 50px;
 }
 
-
 .sidebar a:hover {
-    color: #B7E4C7; 
+    color: #B7E4C7;
 }
-
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #7ca6d5; 
+    background-color: #6f9fdd;
     color: #333;
     margin: 0;
     padding: 0;
 }
 
-
 h1 {
-    color: #74C69D; 
+    color: #74C69D;
 }
-
-
-
 
 .dropdown {
     position: relative;
@@ -61,20 +55,20 @@ h1 {
 
 .dropdown .dropbtn {
     text-decoration: none;
-    color: #74C69D; 
+    color: #74C69D;
     font-size: 18px;
 }
 
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #D8F3DC; 
+    background-color: #D8F3DC;
     min-width: 160px;
     z-index: 1;
 }
 
 .dropdown-content a {
-    color: #74C69D; 
+    color: #74C69D;
     text-decoration: none;
     display: block;
     padding: 10px;
@@ -84,30 +78,35 @@ h1 {
     display: block;
 }
 
+
 /* Tables */
+
 table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0;
-    background-color: #D8F3DC; 
-    border: 1px solid #95D5B2; 
+    background-color: #D8F3DC;
+    border: 1px solid #95D5B2;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-th, td {
+th,
+td {
     padding: 12px;
     text-align: left;
-    border-bottom: 1px solid #95D5B2; 
+    border-bottom: 1px solid #95D5B2;
 }
 
 th {
-    background-color: #B7E4C7; 
+    background-color: #B7E4C7;
 }
 
+
 /* Forms */
+
 form {
     background-color: #D8F3DC;
-    border: 1px solid #95D5B2; 
+    border: 1px solid #95D5B2;
     padding: 40px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 500px;
@@ -118,11 +117,11 @@ form {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh; 
+    height: 100vh;
 }
 
 .centered-form label {
-    text-align: left; 
+    text-align: left;
 }
 
 label {
@@ -137,13 +136,13 @@ select {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
-    border: 1px solid #74C69D; 
+    border: 1px solid #74C69D;
     border-radius: 5px;
 }
 
 input[type="submit"] {
-    background-color: #74C69D; 
-    color: #D8F3DC; 
+    background-color: #74C69D;
+    color: #D8F3DC;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -151,9 +150,8 @@ input[type="submit"] {
 }
 
 input[type="submit"]:hover {
-    background-color: #3DAC78; 
+    background-color: #3DAC78;
 }
-
 
 header {
     background-color: #D8F3DC;
@@ -182,8 +180,8 @@ header {
 .button-link {
     display: inline-block;
     padding: 10px 20px;
-    background-color: #74C69D; 
-    color: #fff; 
+    background-color: #74C69D;
+    color: #fff;
     text-decoration: none;
     border: none;
     border-radius: 5px;
@@ -192,9 +190,8 @@ header {
 }
 
 .button-link:hover {
-    background-color: #3DAC78; 
+    background-color: #3DAC78;
 }
-
 
 footer {
     background-color: #D8F3DC;
@@ -223,7 +220,6 @@ footer {
     text-decoration: none;
     color: #fff;
 }
-
 
 .footer-links a:hover {
     color: #74C69D;

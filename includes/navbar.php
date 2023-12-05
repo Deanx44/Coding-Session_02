@@ -2,7 +2,7 @@
         <h1>Menu</h1>
         <ul>
             <li><a href="/index.php">Home</a></li>
-            <li><a href="/views/student.view.php">Students</a></li>
+            <li><a href="/views/students.view.php">Students</a></li>
             <li><a href="/views/towns_view.php">Town</a></li>
             <li><a href="/views/province_view.php">Province</a></li>
             <li class="dropdown">
