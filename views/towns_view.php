@@ -16,7 +16,7 @@ $town = new TownCity($db);
     <link rel="stylesheet" type="text/css" href="../css/styles.css">
 </head>
 <body>
-    
+    <!-- Include the header -->
     <?php include('../templates/header.html'); ?>
     <?php include('../includes/navbar.php'); ?>
 
@@ -32,7 +32,7 @@ $town = new TownCity($db);
             </tr>
         </thead>
         <tbody>
-            
+          
             <?php
             $results = $town->getAll(); 
             foreach ($results as $result) {
@@ -57,10 +57,9 @@ $town = new TownCity($db);
 
         </div>
         
-
+       
   
     <?php include('../templates/footer.html'); ?>
-
 
 </body>
 </html>
