@@ -3,9 +3,8 @@ include_once("../db.php");
 include_once("../province.php"); 
 
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['id'])) {
-    $id = $_GET['id']; // Retrieve the 'id' from the URL
-
-    // Instantiate the Database and Student classes
+    $id = $_GET['id']; 
+    
     $db = new Database();
     $province = new Province($db);
 
@@ -15,6 +14,5 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['id'])) {
     } else {
         echo "Failed to delete the record.";
     }
-    header("Location: province.view.php");
 }
 ?>
