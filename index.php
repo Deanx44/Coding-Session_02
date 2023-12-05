@@ -1,6 +1,6 @@
 <?php
 include_once("db.php");
-include_once("students.php");
+include_once("student.php");
 
 $db = new Database();
 $connection = $db->getConnection();
@@ -36,24 +36,24 @@ $student = new Student($db);
 
 </head>
 <body>
-    <!--header -->
+    
     <?php include('templates/header.html'); ?>
     <?php include('includes/navbar.php'); ?>
 
     <div class="content">
         <h1>WELCOME</h1>
-        <p>In here you can find the records of the student enrolled in PSU.</p>
+        <p>In here you can find the records of the student enrolled in PSU-PCAT (Cuyo).</p>
     </div>
    
     <div class="content">
         <canvas id="studentChart" width="600" height="600"></canvas>
     </div>
     <script>
-    // connection to student.php
+    
     var maleCount = <?php echo $student->GenderCount(1); ?>;
     var femaleCount = <?php echo $student->GenderCount(0); ?>;
 
-    // Chart.js code for bar chart
+    
     var ctx = document.getElementById('studentChart').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'bar',
@@ -74,7 +74,7 @@ $student = new Student($db);
             }]
         },
                 options: {
-                    responsive: false, //to make the graph organize
+                    responsive: false, 
                 }
     });
 </script>
